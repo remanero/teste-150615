@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Nutrichecker</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_resgister">Resgister</string>
+    <string name="title_activity_produto">Produto</string>
+    <string name="title_activity_consulta_produto">ConsultaProduto</string>
+    <string name="title_activity_detalhe_produto">DetalheProduto</string>
+</resources>
