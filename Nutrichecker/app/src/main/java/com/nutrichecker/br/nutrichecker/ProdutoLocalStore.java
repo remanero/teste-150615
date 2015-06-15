@@ -3,6 +3,10 @@ package com.nutrichecker.br.nutrichecker;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import java.util.List;
+
 /**
  * Created by renato on 15/06/2015.
  */
@@ -16,18 +20,28 @@ public class ProdutoLocalStore {
     }
 
     public void storeUsuarioData(Produto produto){
+
         SharedPreferences.Editor spEditor = produtoLocalDatabase.edit();
-        spEditor.putString("descricao", produto.getDescricao());
-        spEditor.putString("codigoBarra", produto.getCodigoBarra());
+//        spEditor.putString("descricao", produto.getDescricao());
+//        spEditor.putString("codigoBarra", produto.getCodigoBarra());
+//
+//        spEditor.commit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(produto);
+        spEditor.putString("produto",json);
         spEditor.commit();
     }
 
     public Produto getLoggedInProduto() {
-        String descricao = produtoLocalDatabase.getString("descricao", "");
-        String codigoBarra = produtoLocalDatabase.getString("codigoBarra","");
+//        String descricao = produtoLocalDatabase.getString("descricao", "");
+//        String codigoBarra = produtoLocalDatabase.getString("codigoBarra","");
+//        Produto storedProduto = new Produto(descricao, codigoBarra);
+//        return storedProduto;
 
-        Produto storedProduto = new Produto(descricao, codigoBarra);
-
+        Gson gson = new Gson();
+        String json = produtoLocalDatabase.getString("produto","");
+        Produto storedProduto = gson.fromJson(json,Produto.class);
         return storedProduto;
     }
 

@@ -21,12 +21,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ConsultaProduto extends ActionBarActivity implements View.OnClickListener {
@@ -120,33 +123,44 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
             // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-
-            Log.i("json", "aqui1");
-
             // 8. Execute POST request to the given URL
             HttpResponse httpResponse = httpclient.execute(httpPost);
-
-            Log.i("json","aqui2");
-
             HttpEntity entity = httpResponse.getEntity();
-            Log.i("json","aqui3");
             String result2 = EntityUtils.toString(entity);
 
-            Log.i("json","aqui4"+result2);
-
             JSONObject jObject = new JSONObject(result2);
-            Log.i("json","aqui4");
 
             Log.i("json", jObject.toString());
             if(jObject.length() == 0) {
                 returnedProduto = null;
             } else {
                 Integer id = Integer.parseInt(jObject.getString("id"));
-
                 String descricao = jObject.getString("descricao");
-                returnedProduto = new Produto(id, descricao, produto1.getCodigoBarra());
-            }
 
+                List<Restricao> listaRestricoes = new ArrayList<Restricao>();
+                JSONArray values = jObject.getJSONArray("restricoes");
+                for (int i = 0; i < values.length(); i++) {
+                    JSONObject restricao = values.getJSONObject(i);
+                    int restricaoId = restricao.getInt("id");
+                    String descricaoRestricao = restricao.getString("descricao");
+//
+                    Restricao restricaoObj = new Restricao();
+                    restricaoObj.setId(restricaoId);
+                    restricaoObj.setDescricao(descricaoRestricao);
+//
+                    listaRestricoes.add(restricaoObj);
+                    Log.i("json",descricaoRestricao);
+                }
+//                returnedProduto.setRestricoes(restricoes);
+
+                //returnedProduto = new Produto(id, descricao, produto1.getCodigoBarra());
+
+                returnedProduto = new Produto();
+                returnedProduto.setId(id);
+                returnedProduto.setDescricao(descricao);
+                returnedProduto.setCodigoBarra(produto1.getCodigoBarra());
+                returnedProduto.setRestricoes(listaRestricoes);
+            }
 
             // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
@@ -161,6 +175,9 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
         }
         // 11. return result
         //return  result;
+
+        //Log.i("json","size: "+returnedProduto.getRestricoes().size()+"");
+
         return returnedProduto;
     }
 

@@ -28,6 +28,13 @@ public class Produto {
         this.codigoBarra = codigoBarra;
     }
 
+    public Produto(Integer id,String descricao, String codigoBarra, List<Restricao> restricoes) {
+        this.id = id;
+        this.descricao = descricao;
+        this.codigoBarra = codigoBarra;
+        this.restricoes = restricoes;
+    }
+
     public Integer getId() { return id; }
 
     public void setId(Integer id) { this.id = id; }

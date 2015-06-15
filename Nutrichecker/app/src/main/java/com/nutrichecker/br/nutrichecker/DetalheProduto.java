@@ -3,10 +3,14 @@ package com.nutrichecker.br.nutrichecker;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -14,6 +18,8 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
 
     EditText etDescricao, etCodigoBarra;
     TextView tvVoltarMain;
+    //GridView gvRestricoes;
+    ListView listViewRestricao;
     ProdutoLocalStore produtoLocalStore;
 
     @Override
@@ -23,6 +29,7 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
 
         etDescricao = (EditText)findViewById(R.id.etDescricaoDetalhe);
         etCodigoBarra = (EditText)findViewById(R.id.etCodigoBarraDetalhe);
+        listViewRestricao = (ListView) findViewById(R.id.listViewRestricao);
         tvVoltarMain = (TextView)findViewById(R.id.tvVoltarMain);
 
         tvVoltarMain.setOnClickListener(this);
@@ -49,7 +56,10 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
 
         etDescricao.setText(produto.getDescricao());
         etCodigoBarra.setText(produto.getCodigoBarra());
-
+        ArrayAdapter<Restricao> restricaoArrayAdapter =
+                new ArrayAdapter<Restricao>(this,android.R.layout.simple_list_item_1,produto.getRestricoes());
+        Log.i("json",produto.getRestricoes().size()+"");
+        listViewRestricao.setAdapter(restricaoArrayAdapter);
     }
 
     @Override
