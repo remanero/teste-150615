@@ -53,20 +53,23 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         usuarioLocalStore = new UsuarioLocalStore(this);
     }
 
+    private Boolean camposValidate(){
+        if(etUsername.getText().length() > 0 && etPassword.getText().length() > 0){
+            return true;
+        } else {
+            return  false;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bLogin:
-                /*
-                String nome = etUsername.getText().toString();
-                String senha = etPassword.getText().toString();
-                Usuario usuario = new Usuario(nome,senha);
-                autheticate(usuario);
-                */
-
-                //new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/usuario/doLoginEmail");
-                new HttpAsyncTask().execute("http://192.168.0.100:8080/spring/service/usuario/doLoginEmail");
-
+                if(camposValidate()) {
+                    new HttpAsyncTask().execute(ServerRequests.SERVER_ADRESS + "usuario/doLoginEmail");
+                } else {
+                    Toast.makeText(getBaseContext(), "Preencha os campos obrigatorios", Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.tvRegisterLink:
@@ -103,10 +106,8 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
     }
 
     Usuario usuario;
-    //private class HttpAsyncTask extends AsyncTask<String, Void, String> {
     private class HttpAsyncTask extends AsyncTask<String, Void, Usuario> {
         @Override
-        //protected String doInBackground(String... urls) {
         protected Usuario doInBackground(String... urls) {
 
             usuario = new Usuario();
@@ -114,64 +115,47 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
             usuario.setSenha(etPassword.getText().toString());
 
             Usuario userTest = POST(urls[0],usuario);
-            Log.i("teste", userTest.getNome());
+
             if (userTest == null) {
                 showErrorMessage();
             } else {
                 logUsuarioIn(userTest);
             }
-
             return userTest;
-
-            //return POST(urls[0],usuario);
-
         }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        //protected void onPostExecute(String result) {
-        protected void onPostExecute(Usuario result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
 
+        @Override
+        protected void onPostExecute(Usuario result) {
+            Toast.makeText(getBaseContext(), "Usuário encontrado com sucesso!", Toast.LENGTH_LONG).show();
         }
     }
 
-    //public String POST(String url, Usuario usuario){
     public Usuario POST(String url, Usuario usuario){
         InputStream inputStream = null;
         Usuario returnedUsuario = null;
         String result = "";
         try {
-            // 1. create HttpClient
+
             HttpClient httpclient = new DefaultHttpClient();
-            // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
-            // 3. build jsonObject
+
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("nome", usuario.getNome());
             jsonObject.accumulate("senha", usuario.getSenha());
-            // 4. convert JSONObject to JSON to String
-            json = jsonObject.toString();
-            Log.i("JSON", jsonObject.toString());
-            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-            // ObjectMapper mapper = new ObjectMapper();
-            // json = mapper.writeValueAsString(person);
 
-            // 5. set json to StringEntity
+            json = jsonObject.toString();
+
             StringEntity se = new StringEntity(json);
-            // 6. set httpPost Entity
+
             httpPost.setEntity(se);
-            // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-            // 8. Execute POST request to the given URL
             HttpResponse httpResponse = httpclient.execute(httpPost);
-
 
             HttpEntity entity = httpResponse.getEntity();
             String result2 = EntityUtils.toString(entity);
             JSONObject jObject = new JSONObject(result2);
-            Log.i("json", jObject.toString());
             if(jObject.length() == 0) {
                 returnedUsuario = null;
             } else {
@@ -179,10 +163,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
                 returnedUsuario = new Usuario(usuario.nome, email, usuario.senha);
             }
 
-
-            // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
-            // 10. convert inputstream to string
             if(inputStream != null)
                 result = convertInputStreamToString(inputStream);
             else
@@ -191,8 +172,6 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
-        // 11. return result
-        //return  result;
         return returnedUsuario;
     }
 

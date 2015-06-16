@@ -32,9 +32,7 @@ public class MainActivity extends ActionBarActivity  implements View.OnClickList
         tvConsultar.setOnClickListener(this);
 
         usuarioLocalStore = new UsuarioLocalStore(this);
-
-
-    }
+}
 
     @Override
     protected void onStart() {

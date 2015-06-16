@@ -55,11 +55,7 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bConsultaTeste:
-                //startActivity(new Intent(this, MainActivity.class));
-
-                //new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/produto/consultaProduto");
-                new HttpAsyncTask().execute("http://192.168.0.100:8080/spring/service/produto/consultaProduto");
-
+                new HttpAsyncTask().execute(ServerRequests.SERVER_ADRESS + "produto/consultaProduto");
                 break;
         }
     }
@@ -67,12 +63,10 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
     Produto  produto;
     private class HttpAsyncTask extends AsyncTask<String, Void, Produto> {
         @Override
-        //protected String doInBackground(String... urls) {
         protected Produto doInBackground(String... urls) {
 
             produto = new Produto();
             produto.setCodigoBarra(etCodigoBarra.getText().toString());
-
 
             Produto prodTest = POST(urls[0],produto);
             Log.i("json", prodTest.getDescricao());
@@ -81,57 +75,40 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
             } else {
                 logProdutoIn(prodTest);
             }
-
             return prodTest;
-
-            //return POST(urls[0],usuario);
-
         }
-        // onPostExecute displays the results of the AsyncTask.
+
         @Override
-        //protected void onPostExecute(String result) {
         protected void onPostExecute(Produto result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Produto encontrado com sucesso!", Toast.LENGTH_LONG).show();
         }
     }
 
-    //public String POST(String url, Usuario usuario){
     public Produto POST(String url, Produto produto1){
         InputStream inputStream = null;
         Produto returnedProduto = null;
         String result = "";
         try {
-            // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
-            // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("codigoBarra", produto1.getCodigoBarra());
 
-            // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
             Log.i("JSON", jsonObject.toString());
-            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-            // ObjectMapper mapper = new ObjectMapper();
-            // json = mapper.writeValueAsString(person);
 
-            // 5. set json to StringEntity
             StringEntity se = new StringEntity(json);
-            // 6. set httpPost Entity
             httpPost.setEntity(se);
-            // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-            // 8. Execute POST request to the given URL
+
             HttpResponse httpResponse = httpclient.execute(httpPost);
             HttpEntity entity = httpResponse.getEntity();
             String result2 = EntityUtils.toString(entity);
 
             JSONObject jObject = new JSONObject(result2);
 
-            Log.i("json", jObject.toString());
             if(jObject.length() == 0) {
                 returnedProduto = null;
             } else {
@@ -152,9 +129,6 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
                     listaRestricoes.add(restricaoObj);
                     Log.i("json",descricaoRestricao);
                 }
-//                returnedProduto.setRestricoes(restricoes);
-
-                //returnedProduto = new Produto(id, descricao, produto1.getCodigoBarra());
 
                 returnedProduto = new Produto();
                 returnedProduto.setId(id);
@@ -163,9 +137,7 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
                 returnedProduto.setRestricoes(listaRestricoes);
             }
 
-            // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
-            // 10. convert inputstream to string
             if(inputStream != null)
                 result = convertInputStreamToString(inputStream);
             else
@@ -174,11 +146,6 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
-        // 11. return result
-        //return  result;
-
-        //Log.i("json","size: "+returnedProduto.getRestricoes().size()+"");
-
         return returnedProduto;
     }
 

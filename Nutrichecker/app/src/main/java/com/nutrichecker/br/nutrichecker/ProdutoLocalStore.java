@@ -22,11 +22,6 @@ public class ProdutoLocalStore {
     public void storeUsuarioData(Produto produto){
 
         SharedPreferences.Editor spEditor = produtoLocalDatabase.edit();
-//        spEditor.putString("descricao", produto.getDescricao());
-//        spEditor.putString("codigoBarra", produto.getCodigoBarra());
-//
-//        spEditor.commit();
-
         Gson gson = new Gson();
         String json = gson.toJson(produto);
         spEditor.putString("produto",json);

@@ -3,6 +3,8 @@ package com.nutrichecker.br.nutrichecker;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
 /**
  * Created by renato on 14/06/2015.
  */
@@ -17,22 +19,16 @@ public class UsuarioLocalStore {
 
     public void storeUsuarioData(Usuario usuario){
         SharedPreferences.Editor spEditor = usuarioLocalDatabase.edit();
-        /*spEditor.putString("nome", usuario.nome);
-        spEditor.putString("email", usuario.email);
-        spEditor.putString("senha", usuario.senha);*/
-        spEditor.putString("nome", usuario.getNome());
-        spEditor.putString("email", usuario.getEmail());
-        spEditor.putString("senha", usuario.getSenha());
+        Gson gson = new Gson();
+        String json = gson.toJson(usuario);
+        spEditor.putString("usuario",json);
         spEditor.commit();
     }
 
     public Usuario getLoggedInUsuario() {
-        String nome = usuarioLocalDatabase.getString("nome", "");
-        String email = usuarioLocalDatabase.getString("email","");
-        String senha = usuarioLocalDatabase.getString("senha","");
-
-        Usuario storedUsuario = new Usuario(nome,email,senha);
-
+        Gson gson = new Gson();
+        String json = usuarioLocalDatabase.getString("usuario","");
+        Usuario storedUsuario = gson.fromJson(json,Usuario.class);
         return storedUsuario;
     }
 

@@ -63,12 +63,7 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
         ArrayAdapter<Restricao> restricaoArrayAdapter =
                 new ArrayAdapter<Restricao>(this,android.R.layout.simple_list_item_1,produto.getRestricoes());
         listViewRestricao.setAdapter(restricaoArrayAdapter);
-        Log.i("json", produto.getCodigoBarra());
-//        Boolean teste = produto.getLiberado();
-//        if(teste == true)
-//            Log.i("json","Produto liberado");
-//        else
-//            Log.i("json", "Produto proibido");
+
         boolean liberado = true;
         for(Restricao r : produto.getRestricoes()) {
             if(r.getId().equals(1))
@@ -76,13 +71,10 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
         }
 
         if(liberado) {
-            //llDetalhes.setBackgroundColor(R.color.);
             llDetalhes.setBackgroundColor(Color.rgb(50, 205, 50));
-            Log.i("json", "Produto liberado");
         }
         else {
             llDetalhes.setBackgroundColor(Color.rgb(255, 69, 0));
-            Log.i("json", "Produto proibido");
         }
     }
 

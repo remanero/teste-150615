@@ -51,23 +51,23 @@ public class Resgister extends ActionBarActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bRegister:
-                /*
-                String nome = etName.getText().toString();
-                String email = etUsername.getText().toString();
-                String senha = etPassword.getText().toString();
-
-                Usuario usuario = new Usuario(nome, email, senha);
-
-                registerUsuario(usuario);
-                */
-
-                //new HttpAsyncTask().execute("http://10.0.0.102:8080//spring/service/usuario/registerLogin");
-                new HttpAsyncTask().execute("http://192.168.0.100:8080//spring/service/usuario/registerLogin");
-
+                if(camposValidate()) {
+                    new HttpAsyncTask().execute(ServerRequests.SERVER_ADRESS + "usuario/registerLogin");
+                } else {
+                    Toast.makeText(getBaseContext(), "Preencha os campos obrigatorios", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.tvLoginLink:
                 startActivity(new Intent(this, Login.class));
                 break;
+        }
+    }
+
+    private Boolean camposValidate(){
+        if(etName.getText().length() > 0 && etUsername.getText().length() > 0 && etPassword.getText().length() > 0){
+            return true;
+        } else {
+            return  false;
         }
     }
 
@@ -87,24 +87,19 @@ public class Resgister extends ActionBarActivity implements View.OnClickListener
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-
             usuario = new Usuario();
             usuario.setNome(etName.getText().toString());
             usuario.setEmail(etUsername.getText().toString());
             usuario.setSenha(etPassword.getText().toString());
 
-            //return POST(urls[0],usuario);
-
             String test = POST(urls[0],usuario);
-
             startActivity(new Intent(Resgister.this, Login.class));
-
             return  test;
         }
-        // onPostExecute displays the results of the AsyncTask.
+
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Usuario cadastrado com sucesso!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -112,35 +107,29 @@ public class Resgister extends ActionBarActivity implements View.OnClickListener
         InputStream inputStream = null;
         String result = "";
         try {
-            // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost(url);
             String json = "";
-            // 3. build jsonObject
+
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("nome", usuario.getNome());
             jsonObject.accumulate("email", usuario.getEmail());
             jsonObject.accumulate("senha", usuario.getSenha());
-            // 4. convert JSONObject to JSON to String
+
             json = jsonObject.toString();
             Log.i("JSON", jsonObject.toString());
-            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-            // ObjectMapper mapper = new ObjectMapper();
-            // json = mapper.writeValueAsString(person);
 
-            // 5. set json to StringEntity
             StringEntity se = new StringEntity(json);
-            // 6. set httpPost Entity
+
             httpPost.setEntity(se);
-            // 7. Set some headers to inform server about the type of the content
+
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-            // 8. Execute POST request to the given URL
+
             HttpResponse httpResponse = httpclient.execute(httpPost);
-            // 9. receive response as inputStream
+
             inputStream = httpResponse.getEntity().getContent();
-            // 10. convert inputstream to string
+
             if(inputStream != null)
                 result = convertInputStreamToString(inputStream);
             else
@@ -149,7 +138,6 @@ public class Resgister extends ActionBarActivity implements View.OnClickListener
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
-        // 11. return result
         return result;
     }
 
