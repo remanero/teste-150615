@@ -12,6 +12,7 @@ public class Produto {
     private String codigoBarra;
     private List<Restricao> restricoes;
     private Fornecedor fornecedor;
+    private Boolean liberado;
 
     public Produto() {
 
@@ -55,5 +56,8 @@ public class Produto {
 
     public void setRestricoes(List<Restricao> restricoes) { this.restricoes = restricoes; }
 
+    public Boolean getLiberado() { return liberado; }
+
+    public void setLiberado(Boolean liberado) { this.liberado = liberado; }
 
 }

@@ -57,7 +57,8 @@ public class ConsultaProduto extends ActionBarActivity implements View.OnClickLi
             case R.id.bConsultaTeste:
                 //startActivity(new Intent(this, MainActivity.class));
 
-                new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/produto/consultaProduto");
+                //new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/produto/consultaProduto");
+                new HttpAsyncTask().execute("http://192.168.0.100:8080/spring/service/produto/consultaProduto");
 
                 break;
         }

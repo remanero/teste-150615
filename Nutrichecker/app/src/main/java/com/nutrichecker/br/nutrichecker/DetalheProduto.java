@@ -1,6 +1,7 @@
 package com.nutrichecker.br.nutrichecker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,8 +20,8 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
 
     EditText etDescricao, etCodigoBarra;
     TextView tvVoltarMain;
-    //GridView gvRestricoes;
     ListView listViewRestricao;
+    LinearLayout llDetalhes;
     ProdutoLocalStore produtoLocalStore;
 
     @Override
@@ -31,6 +33,8 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
         etCodigoBarra = (EditText)findViewById(R.id.etCodigoBarraDetalhe);
         listViewRestricao = (ListView) findViewById(R.id.listViewRestricao);
         tvVoltarMain = (TextView)findViewById(R.id.tvVoltarMain);
+
+        llDetalhes = (LinearLayout)findViewById(R.id.llDetalhesProduto);
 
         tvVoltarMain.setOnClickListener(this);
 
@@ -58,8 +62,28 @@ public class DetalheProduto extends ActionBarActivity implements View.OnClickLis
         etCodigoBarra.setText(produto.getCodigoBarra());
         ArrayAdapter<Restricao> restricaoArrayAdapter =
                 new ArrayAdapter<Restricao>(this,android.R.layout.simple_list_item_1,produto.getRestricoes());
-        Log.i("json",produto.getRestricoes().size()+"");
         listViewRestricao.setAdapter(restricaoArrayAdapter);
+        Log.i("json", produto.getCodigoBarra());
+//        Boolean teste = produto.getLiberado();
+//        if(teste == true)
+//            Log.i("json","Produto liberado");
+//        else
+//            Log.i("json", "Produto proibido");
+        boolean liberado = true;
+        for(Restricao r : produto.getRestricoes()) {
+            if(r.getId().equals(1))
+                liberado = false;
+        }
+
+        if(liberado) {
+            //llDetalhes.setBackgroundColor(R.color.);
+            llDetalhes.setBackgroundColor(Color.rgb(50, 205, 50));
+            Log.i("json", "Produto liberado");
+        }
+        else {
+            llDetalhes.setBackgroundColor(Color.rgb(255, 69, 0));
+            Log.i("json", "Produto proibido");
+        }
     }
 
     @Override

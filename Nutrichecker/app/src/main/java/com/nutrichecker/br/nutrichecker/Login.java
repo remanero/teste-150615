@@ -64,7 +64,8 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
                 autheticate(usuario);
                 */
 
-                new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/usuario/doLoginEmail");
+                //new HttpAsyncTask().execute("http://10.0.0.102:8080/spring/service/usuario/doLoginEmail");
+                new HttpAsyncTask().execute("http://192.168.0.100:8080/spring/service/usuario/doLoginEmail");
 
                 break;
 

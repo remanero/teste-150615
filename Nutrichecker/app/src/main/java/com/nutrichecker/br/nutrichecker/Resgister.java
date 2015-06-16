@@ -61,7 +61,8 @@ public class Resgister extends ActionBarActivity implements View.OnClickListener
                 registerUsuario(usuario);
                 */
 
-                new HttpAsyncTask().execute("http://10.0.0.102:8080//spring/service/usuario/registerLogin");
+                //new HttpAsyncTask().execute("http://10.0.0.102:8080//spring/service/usuario/registerLogin");
+                new HttpAsyncTask().execute("http://192.168.0.100:8080//spring/service/usuario/registerLogin");
 
                 break;
             case R.id.tvLoginLink:
